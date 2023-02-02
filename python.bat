@@ -1,0 +1,1 @@
+C:\tmp\Python\py310\python.exe %*
