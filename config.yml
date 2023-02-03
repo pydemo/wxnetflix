@@ -1,0 +1,11 @@
+---
+title: 'Trigger generator'
+DEV:
+    Aurora:
+        host    : datafabric-aurora-pg.cluster-crdqucb2ywwx.us-east-1.rds.amazonaws.com
+        port    : 5432
+        user    : fire_de_dev_rw_sa        
+        database: clinical_analytics_dev
+        password: {env_var: GEN_TRG_AURORA_PWD}
+
+    audit_table: site_intelligence.ob_sdl_audit
