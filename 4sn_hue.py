@@ -15,7 +15,16 @@ import pandas as pd
 #sns.set()
 
 
+def fixed_scatterplot(*args, label=None, **kwargs):
+    pp(args)
+    pp(kwargs)
+    sns.scatterplot(*args, **kwargs, labels=[label])
 
+def fixed_boxplot(*args, label=None, **kwargs):
+    sns.boxplot(labels=[label])
+
+
+    
 
 class SamplePanel(wx.Panel):
     def __init__(self, parent):
@@ -24,7 +33,7 @@ class SamplePanel(wx.Panel):
 
         self.axx=[]
         if 1:
-            self.ff = fig.subfigures(1, 4, wspace=0.07)
+            self.ff = fig.subfigures(1, 2, wspace=0.07)
             
             for ff in self.ff:
                 self.axx.append(ff.add_subplot(111))
@@ -33,7 +42,7 @@ class SamplePanel(wx.Panel):
             self.x = np.array(list('XYZV'))
             self.y = np.array([200,400,300,20])
         self.tips = pd.read_csv('tips.csv')
-        self.axx[0].set_ylabel("Sample numbers")
+        #self.axx[0].set_ylabel("Sample numbers")
         
 
         self.canvas = FigureCanvas(self, -1, self.figure)
@@ -60,16 +69,51 @@ class SamplePanel(wx.Panel):
         
         #data.index = pd.to_datetime(data["day"])
         #data[["sex", "total_bill"]].plot(kind="area", ax=self.ax)
-    
+    def hist_plot(self, data, color):
+        
+                
+
+        sns.histplot(data["tip"], ax=self.axx[self.pid]).set(title=data['time'][data.index[0]])
+        self.pid +=1
+    def scatter_plot(self, data, color):
+        fixed_scatterplot(x=data['total_bill'], y=data['tip'], alpha=.7, ax=self.axx[self.pid])
+        
+        #sns.scatterplot(x=data['total_bill'], y=data['tip'], alpha=.7, ax=self.axx[self.pid])
+        self.pid +=1
+    def swarm_plot(self, data, color):
+        
+        #g.map(fixed_boxplot, 'smoker', 'total_bill')
+        # And you can do swarmplot on top
+        #g.map(sns.swarmplot, 'smoker', 'total_bill', color='0.25', order=['Yes','No'])
+        sns.swarmplot(data, 'smoker', 'total_bill', color='0.25', order=['Yes','No'])
+        self.pid +=1
+
     def OnButtonClick(self,event):
         #sns.set()
         self.figure.set_canvas(self.canvas)
         if 0:
             sns.barplot(self.tips, palette="BuGn_d", ax=self.ax)
-        if 1:
+        if 0:
             g = sns.FacetGrid(self.tips, col="day", height=2, aspect=.5)
             g.map_dataframe(self.plot_heatmap)
             g.set_axis_labels("Total bill (US Dollars)", "Tip")
+
+        if 0:
+            g = sns.FacetGrid(self.tips, col="time", height=2, aspect=.5)
+            
+            g.map_dataframe(self.hist_plot)
+        if 0:
+            g = sns.FacetGrid(self.tips, col="sex", hue="smoker")
+            g.map(fixed_boxplot, 'smoker', 'total_bill')
+            g.map_dataframe(self.scatter_plot)
+            #g.add_legend()
+        if 1:
+            g = sns.FacetGrid(self.tips,  col='day', hue='smoker')
+            g.add_legend()
+            #g.map(fixed_boxplot, 'smoker', 'total_bill')
+            g.map_dataframe(self.scatter_plot)
+            #g.add_legend()            
+            #g = sns.FacetGrid(tips, col='day', hue='smoker')
         if 0:
             g = sns.FacetGrid(self.tips, col="day", height=4, aspect=.5)
             g.map(sns.barplot, "sex", "total_bill", order=["Male", "Female"], ax=self.axx)
