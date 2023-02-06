@@ -133,14 +133,7 @@ class FilterPanel(wx.Panel, Controller):
         if 'wxMac' in wx.PlatformInfo:
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
         #parent.SetSizer(leftBox)
-        if 0:
-            #print(list_cache)
-            if isfile(list_cache):
-                self.header, self.rows= json.loads(open(list_cache).read())
-                #self.show_data()
-        #pp(self.header)
-        #self.RecreateList()
-        #self.show_data()
+
         self.SetSizerAndFit(leftBox)
         leftBox.Layout()
         if 1:
