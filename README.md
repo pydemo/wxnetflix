@@ -18,7 +18,7 @@ Then navigate to "Filter" text input control in upped panel and start typing.
 ![List of all items](https://github.com/pydemo/wxnetflix/blob/main/docs/screenshots/ushow_ukraine.JPG)
 
 $${\color{red}Note: \space Plotting \space is \space always \space done \space over \space full \space data \space set.}$$
-Filtering will not affect plotting!
+__`Filtering will not affect plotting!`__
 
 
 ## ufinal.bat/Plot 1
