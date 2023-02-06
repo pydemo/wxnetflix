@@ -1,6 +1,9 @@
 # wxnetflix
 wxpython netflix demo
 
+## Data source
+https://www.kaggle.com/datasets/swatikhedekar/exploratory-data-analysis-on-netflix-data/code?resource=download
+
 
 ## ufinal.bat/Data search
 Shows data and and lets you filter items for in/netflix_titles_2021.csv items.
