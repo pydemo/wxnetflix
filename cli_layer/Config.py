@@ -10,8 +10,8 @@ from cli_layer.common import TMP_DIR, PIPELINE_DIR
 
 e=sys.exit
 
-env= os.environ.get('ZZZ_GENERATOR_ENV')
-assert env in ['DEV','QA','PROD'], 'Undefined env: "set ZZZ_GENERATOR_ENV="'
+env= os.environ.get('ZZZ_NETFLIX_PLOTTER_ENV')
+assert env in ['DEV','QA','PROD'], 'Undefined env: "set ZZZ_NETFLIX_PLOTTER_ENV=DEV"'
 
 
 def qprint(*args, **kwargs):

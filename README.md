@@ -2,15 +2,15 @@
 wxpython netflix demo
 
 
-## umerged.bat
-Shows data and rating/count scatterplot for  in/netflix_titles_2021.csv items.
+## ufinal.bat
+Shows data and 5 plots  for in/netflix_titles_2021.csv items.
 
 ```
-C:\Users\alex_\myg\wxnetflix>cat umerged.bat
+C:\Users\alex_\myg\wxnetflix>cat ufinal.bat
 python ui.py  -nop 2 -r DEV -p csv/show/data_plot -pa config.yml netflix_titles_2021.csv  %*
 ```
 ### Opens to
-![List of all items](https://github.com/pydemo/wxnetflix/blob/main/docs/screenshots/merged.JPG)
+![List of all items](https://github.com/pydemo/wxnetflix/blob/main/docs/screenshots/ufinal.JPG)
 
 
 ## uplot.bat

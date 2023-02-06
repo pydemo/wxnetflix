@@ -60,9 +60,9 @@ def cnt_col(df, col, new_col):
 def sum_col(df, col, new_col):
         df[new_col] = df[col].sum()
         return df        
-class PlotPanel(wx.Panel, Base):
+class PlotPanel_type(wx.Panel, Base):
     def __init__(self, parent=None):
-        super(PlotPanel, self).__init__(parent)
+        super(PlotPanel_type, self).__init__(parent)
         self.ref= dict2(page=0, chunk=0, size=10)
         
         self.b_plot = b_plot=wx.Button(self, wx.ID_OK, label="Plot", size=(50, 25))
@@ -139,11 +139,7 @@ class PlotPanel(wx.Panel, Base):
         
         if 1:
             
-            #sns.histplot(data=self.data, x="type", stat="percent", discrete=True, ax=self.axes).set(title='Item type/count')
-            #sns.histplot(data=self.data, x="release_year", shrink=.8, ax=self.axes).set(title='Release year/count')
-            #sns.histplot(data=self.data, x="release_year", hue="type", multiple="dodge", shrink=.8, ax=self.axes, binwidth=3, kde=True).set(title='Release year by type/count')
-            #sns.histplot(data=self.data, ax=self.axes, binwidth=3, kde=True).set(title='All')
-            sns.histplot(data=self.data, ax=self.axes, x="rating", hue="type", kde=True)
+            sns.histplot(data=self.data, x="type", stat="percent", discrete=True, ax=self.axes, binwidth=3).set(title='Item type/count')
         if 0:
             for ax in self.axx:
                 ax.cla()        

@@ -39,6 +39,10 @@ list_cache=join('ui_cache','GH', 'list_objects', 'List_Objects_Center_1.json')
 
 
 PlotPanel = load_pipeline_module(uic, 'PlotPanel')
+PlotPanel_ratings = load_pipeline_module(uic, 'PlotPanel_ratings')
+PlotPanel_type = load_pipeline_module(uic, 'PlotPanel_type')
+PlotPanel_year = load_pipeline_module(uic, 'PlotPanel_year')
+PlotPanel_release_by_type = load_pipeline_module(uic, 'PlotPanel_release_by_type')
 
 
 
@@ -76,8 +80,23 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
             self.slist = slist = wx.ListCtrl(self, size=(-1,100), style=wx.LC_REPORT )
         else:
             self.slist = slist = ListCtrl(parent=self )
-            self.plot = plot = PlotPanel(parent=self )
             
+            nb = wx.Notebook(self)
+            if 1:
+                self.plot = plot = PlotPanel(parent=nb )
+                nb.AddPage(plot,"Bar: Release by type") 
+            if 1:
+                self.plot2 = plot2 = PlotPanel_ratings(parent=nb )
+                nb.AddPage(plot2,"Scatter: Count by ratings") 
+            if 1:
+                self.plot3 = plot3 = PlotPanel_type(parent=nb )
+                nb.AddPage(plot3,"Bar: Count by type") 
+            if 1:
+                self.plot4 = plot4 = PlotPanel_year(parent=nb )
+                nb.AddPage(plot4,"Bar: Count by year") 
+            if 1:
+                self.plot5 = plot5 = PlotPanel_release_by_type(parent=nb )
+                nb.AddPage(plot5,"Bar: Type by year") 
         if 1:
             self.slp1 = slp = FilterPanel(parent=self, slist=slist, size=(500,500))
             #self.slist=slist=slp.slist
@@ -110,7 +129,7 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         #h_sizer.Add(slp, 0, wx.EXPAND|wx.ALL)
         v_sizer.Add(h_sizer, 0, wx.EXPAND|wx.ALL)
         v_sizer.Add(slist, 1, wx.EXPAND|wx.ALL)
-        v_sizer.Add(plot, 0, wx.EXPAND|wx.ALL)
+        v_sizer.Add(nb, 0, wx.EXPAND|wx.ALL)
         #self.SetSizerAndFit(leftBox)
         #self.Fit()
         #v_sizer.leftBox()        
