@@ -39,7 +39,7 @@ import cli_layer.config.app_config as app_config
 
 class MainFrame(wx.Frame):
     def __init__(self, title, parent=None):
-        super(MainFrame, self).__init__(parent, title=title, size=(600,800), pos=(400,200))
+        super(MainFrame, self).__init__(parent, title=title, size=(1200,1000), pos=(400,200))
         vbox = wx.BoxSizer(wx.VERTICAL)
         from ui_layer.LoaderPanel import LoaderPanel
         panel=LoaderPanel(self)

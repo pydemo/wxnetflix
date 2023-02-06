@@ -22,7 +22,7 @@ uilyt = ui_layout.uilyt
 import ui_layer.config.ui_config as ui_config
 uic = ui_config.uic
 
-
+s3c = boto3.client('s3')
 
 from ui_layer.module.controller.ListCtrl import DoubleClick
 
@@ -31,8 +31,7 @@ e=sys.exit
 #from ui_layer.module.Searcheable_ListPanel import Searcheable_ListPanel
 from ui_layer.utils import exception, load_pipeline_module
 FilterPanel     = load_pipeline_module(uic, 'FilterPanel')
-SearchTablePanel       = load_pipeline_module(uic, 'SearchTablePanel')
-TemplateTypePanel       = load_pipeline_module(uic, 'TemplateTypePanel')
+ScanPanel       = load_pipeline_module(uic, 'ScanPanel')
 NavigationPanel = load_pipeline_module(uic, 'NavigationPanel')
 ListCtrl        = load_pipeline_module(uic, 'ListCtrl')
 list_cache=join('ui_cache','GH', 'list_objects', 'List_Objects_Center_1.json')
@@ -63,10 +62,9 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         #h_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        
+        self.bucket_name =bucket_name= uic.params[0]
         if 1:
-            self.spnl = spnl = SearchTablePanel(self)
-            self.spnl.Hide()
+            self.spnl = spnl = ScanPanel(self)
         if 0:
             self.slist = slist = wx.ListCtrl(self, size=(-1,100), style=wx.LC_REPORT )
         else:
@@ -77,33 +75,18 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
             #self.slist=slist=slp.slist
             self.header=slp.header
             #self.slist =  slist =  wx.ListCtrl(list_panel, size=(-1,100), style=wx.LC_REPORT )
-        if 0:
-            self.npnl = npnl = NavigationPanel(parent=self)
-            self.npnl.Hide()
-        v_sizer.Add(spnl, 0, wx.EXPAND)
-        if 0:
-            if 0:
-                lblList = ['Static', 'Dynamic'] 
-            
-                self.rbox = wx.RadioBox(self, label = '', size=(150, 40), choices = lblList, majorDimension = 1, style =wx.NO_BORDER|wx.RA_SPECIFY_ROWS) 
-                self.rbox.Bind(wx.EVT_RADIOBOX,self.onRadioBox) 
-            else:
-                self.rbox = TemplateTypePanel(self)
         if 1:
-            h_sizer = wx.BoxSizer(wx.HORIZONTAL)
-            h_sizer.Add(slp, 1, wx.ALIGN_CENTER)
-            if 0:
-                h_sizer.Add((20,-1), 0)
-                if 0:
-                
-                    h_sizer.Add(npnl, 0)
-                else:
-                    h_sizer.Add(self.rbox, 0, wx.ALIGN_CENTER)
-                    h_sizer.Add((20,-1), 0)
-                
+            self.npnl = npnl = NavigationPanel(parent=self)
+        v_sizer.Add(spnl, 0, wx.EXPAND)
+        v_sizer.Add(slist, 1, wx.EXPAND|wx.ALL)
+        
+        
+        h_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        h_sizer.Add(slp, 1, wx.EXPAND|wx.ALL)
+        h_sizer.Add((20,-1), 0)
+        h_sizer.Add(npnl, 0)
         #h_sizer.Add(slp, 0, wx.EXPAND|wx.ALL)
         v_sizer.Add(h_sizer, 0, wx.EXPAND|wx.ALL)
-        v_sizer.Add(slist, 1, wx.EXPAND|wx.ALL)
         #self.SetSizerAndFit(leftBox)
         #self.Fit()
         #v_sizer.leftBox()        
@@ -112,10 +95,8 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         
         v_sizer.Layout()
         self.SetSizerAndFit(v_sizer)
-        if 1:
-            DoubleClick.__init__(self,self.showPipeline)
-
-      
+        
+        DoubleClick.__init__(self,self.showPipeline)
     def showPipeline(self,rid):
         print('--------------------------')
         slist=self.slist
@@ -149,7 +130,7 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title("<b>Retrieving movie details</b>")
+                     .Title("<b>Retrieving pipeline list from AWS</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)
@@ -168,13 +149,12 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
             for row in self.rows:
                 data.Append(row)
             data.Freeze()
-            if 0:
-                try: #set header
-                    for cid,k in enumerate(self.header):
-                        data.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER) #wx.LIST_AUTOSIZE)
-                    #data.AutoSizeColumns()
-                finally:
-                    data.Thaw()
+            try: #set header
+                for cid,k in enumerate(self.header):
+                    data.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER) #wx.LIST_AUTOSIZE)
+                #data.AutoSizeColumns()
+            finally:
+                data.Thaw()
             #pp(data[0])
             #print(data)
             wx.GetApp().Yield()

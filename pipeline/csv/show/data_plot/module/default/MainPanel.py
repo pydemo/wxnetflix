@@ -32,10 +32,15 @@ e=sys.exit
 from ui_layer.utils import exception, load_pipeline_module
 FilterPanel     = load_pipeline_module(uic, 'FilterPanel')
 SearchTablePanel       = load_pipeline_module(uic, 'SearchTablePanel')
-TemplateTypePanel       = load_pipeline_module(uic, 'TemplateTypePanel')
+#TemplateTypePanel       = load_pipeline_module(uic, 'TemplateTypePanel')
 NavigationPanel = load_pipeline_module(uic, 'NavigationPanel')
 ListCtrl        = load_pipeline_module(uic, 'ListCtrl')
 list_cache=join('ui_cache','GH', 'list_objects', 'List_Objects_Center_1.json')
+
+
+PlotPanel = load_pipeline_module(uic, 'PlotPanel')
+
+
 
 def get_AWS_Pipeline_List():
     
@@ -53,7 +58,7 @@ def get_AWS_Pipeline_List():
 class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
     
     def __init__(self,  **kwargs):
-        #pp(kwargs)
+
         #self.defaultUrl = kwargs.get('defaultUrl', '')
         self.parent=parent=kwargs['parent']
         wx.Panel.__init__(self, kwargs['parent'])
@@ -64,23 +69,24 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         #h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        if 1:
+        if 0:
             self.spnl = spnl = SearchTablePanel(self)
             self.spnl.Hide()
         if 0:
             self.slist = slist = wx.ListCtrl(self, size=(-1,100), style=wx.LC_REPORT )
         else:
             self.slist = slist = ListCtrl(parent=self )
+            self.plot = plot = PlotPanel(parent=self )
             
         if 1:
-            self.slp1 = slp = FilterPanel(parent=self, slist=slist)
+            self.slp1 = slp = FilterPanel(parent=self, slist=slist, size=(500,500))
             #self.slist=slist=slp.slist
             self.header=slp.header
             #self.slist =  slist =  wx.ListCtrl(list_panel, size=(-1,100), style=wx.LC_REPORT )
         if 0:
             self.npnl = npnl = NavigationPanel(parent=self)
             self.npnl.Hide()
-        v_sizer.Add(spnl, 0, wx.EXPAND)
+        #v_sizer.Add(spnl, 0, wx.EXPAND)
         if 0:
             if 0:
                 lblList = ['Static', 'Dynamic'] 
@@ -104,6 +110,7 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         #h_sizer.Add(slp, 0, wx.EXPAND|wx.ALL)
         v_sizer.Add(h_sizer, 0, wx.EXPAND|wx.ALL)
         v_sizer.Add(slist, 1, wx.EXPAND|wx.ALL)
+        v_sizer.Add(plot, 0, wx.EXPAND|wx.ALL)
         #self.SetSizerAndFit(leftBox)
         #self.Fit()
         #v_sizer.leftBox()        
@@ -112,7 +119,7 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         
         v_sizer.Layout()
         self.SetSizerAndFit(v_sizer)
-        if 1:
+        if 0:
             DoubleClick.__init__(self,self.showPipeline)
 
       
