@@ -81,22 +81,26 @@ class PlotPanel(wx.Panel, Base):
         #sizer.Add(self.list_ctrl, 1, wx.ALL|wx.EXPAND, 1)
         #self.SetSizer(sizer)
         AsyncBind(wx.EVT_BUTTON, self.async_download, button1)
-        if 0:
+        if 1:
             self.figure = Figure()
             self.axes = self.figure.add_subplot(111)
             self.canvas = FigureCanvas(self, -1, self.figure)
-
-            self.tips = pd.read_csv('tips.csv')
-            self.tips=self.tips.groupby("sex").apply(cnt_col, 'sex', 'sex_count')
-            self.tips=self.tips.groupby("sex").apply(sum_col, 'tip', 'total_tips')
-            pp(self.tips)
+            if 0:
+                self.tips = pd.read_csv('tips.csv')
+                self.tips=self.tips.groupby("sex").apply(cnt_col, 'sex', 'sex_count')
+                self.tips=self.tips.groupby("sex").apply(sum_col, 'tip', 'total_tips')
+                pp(self.tips)
+            if 1:
+                self.data = pd.read_csv('in/netflix_titles_2021.csv')
+                self.data=self.data.groupby("rating").apply(cnt_col, 'rating', 'rating_count')
+                
             
             sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
             
             self.SetSizer(sizer)
             self.Fit()
             self.pid=0
-        if 1:
+        if 0:
         
             self.figure =fig= Figure()
 
@@ -106,7 +110,12 @@ class PlotPanel(wx.Panel, Base):
                 
                 for ff in self.ff:
                     self.axx.append(ff.add_subplot(111))
-            self.tips = pd.read_csv('tips.csv')
+            if 0:
+                self.data = pd.read_csv('tips.csv')
+            else:
+                self.data = pd.read_csv('in/netflix_titles_2021.csv')
+                self.data=self.data.groupby("rating").apply(cnt_col, 'rating', 'rating_count')
+            
             self.canvas = FigureCanvas(self, -1, self.figure)
 
             #self.tips=self.tips.groupby("sex").apply(cnt_col, 'sex', 'sex_count')
@@ -123,26 +132,28 @@ class PlotPanel(wx.Panel, Base):
         
                 
 
-        sns.histplot(data["tip"], ax=self.axx[self.pid]).set(title=data['time'][data.index[0]])
+        sns.histplot(x=data["rating"], y=data["rating_count"], ax=self.axx[self.pid]).set(title=data['type'][data.index[0]])
         self.pid +=1
     def Plot (self):
         self.figure.set_canvas(self.canvas)
-        #self.axes.cla()
-        for ax in self.axx:
-            ax.cla()
-        if 1:
-            g = sns.FacetGrid(self.tips, col="time", height=2, aspect=.5)
+        
+
+        if 0:
+            for ax in self.axx:
+                ax.cla()        
+            g = sns.FacetGrid(self.data, col="type", height=2, aspect=.5)
             g.map_dataframe(self.hist_plot)
             
-        if 0:
-            g = sns.FacetGrid(self.tips, hue="time")
+        if 1:
+            self.axes.cla()
+            g = sns.FacetGrid(self.data, hue="type")
             sns.scatterplot(
-                data=self.tips, x="sex", y="total_tips", hue="size", ax=self.axes
+                data=self.data, x="rating_count", y="rating", hue="type", ax=self.axes
             ).set(title='Netflix')
             if 0:
                 sns.scatterplot(
-                    data=self.tips, x="total_bill", y="tip", hue="size", ax=self.axes
-                ).set(title='Netflix')
+                    data=self.data, x="rating", y="rating_count", hue="type", ax=self.axes
+                ).set(title='Netflix <2021')
             g.add_legend()
         self.canvas.draw()
         self.pid=0
