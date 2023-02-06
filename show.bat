@@ -1,1 +1,1 @@
-python cli.py  -nop 2 -r DEV -p csv\show\data -pa config.yml netflix_titles_2021.csv %*
+python cli.py  -nop 2 -r DEV -p csv/show/data -pa config.yml in/netflix_titles_2021.csv %*

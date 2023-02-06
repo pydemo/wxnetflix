@@ -1,0 +1,1 @@
+python ui.py  -nop 2 -r DEV -p csv/show/data -pa config.yml netflix_titles_2021.csv  %* 

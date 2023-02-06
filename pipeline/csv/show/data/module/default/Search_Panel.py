@@ -19,7 +19,8 @@ import cli_layer.s3_utils  as S3U
 import ui_layer.config.ui_config as ui_config
 uic = ui_config.uic
 
-
+import cli_layer.config.app_config as app_config
+apc = app_config.apc
 
 USE_CUSTOMTREECTRL = False
 DEFAULT_PERSPECTIVE = "Default Perspective"
@@ -188,7 +189,7 @@ class Search_Panel(wx.Panel, Controller):
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title("<b>Retrieving pipeline list from AWS</b>")
+                     .Title("<b>Retrieving movie details</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)
@@ -236,13 +237,13 @@ class Search_Panel(wx.Panel, Controller):
         ppl=uic.ppl
         with wx.WindowDisabler():
 
-
+            ret= apc.cfg[apc.env]['retrieving']
             info = wx.BusyInfo(
                  wx.BusyInfoFlags()
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title("<b>Retrieving pipeline details from AWS 456</b>")
+                     .Title(f"<b>{ret}</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)

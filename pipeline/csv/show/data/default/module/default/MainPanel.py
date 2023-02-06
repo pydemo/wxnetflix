@@ -21,8 +21,9 @@ import ui_layer.config.ui_layout as ui_layout
 uilyt = ui_layout.uilyt
 import ui_layer.config.ui_config as ui_config
 uic = ui_config.uic
+import cli_layer.config.app_config as app_config
+apc = app_config.apc
 
-s3c = boto3.client('s3')
 
 from ui_layer.module.controller.ListCtrl import DoubleClick
 
@@ -124,13 +125,14 @@ class MainPanel(wx.Panel, Base, EditMenu, DoubleClick):
         self.show_data()
         event.Skip()
     def _show_data(self):
+        ret= apc.cfg[apc.env]['retrieving']
         with wx.WindowDisabler():
             info = wx.BusyInfo(
                  wx.BusyInfoFlags()
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title("<b>Retrieving pipeline list from AWS</b>")
+                     .Title(f"<b>{ret}</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)

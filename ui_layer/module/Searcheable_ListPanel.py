@@ -242,7 +242,7 @@ class Searcheable_ListPanel(wx.Panel, Controller):
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title("<b>Retrieving pipeline details from AWS</b>")
+                     .Title("<b>Retrieving pipeline details from AWS 222</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)

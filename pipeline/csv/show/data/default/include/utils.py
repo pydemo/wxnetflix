@@ -20,7 +20,7 @@ def usage(apc, **kwargs):
         
         
         config,file_name = params
-        apc.title='Netflix data'
+        apc.title=''
         
 
     except Exception as err:
