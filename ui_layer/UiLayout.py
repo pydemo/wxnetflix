@@ -57,9 +57,9 @@ class UiLayout(Config):
     def getLayoutFileName(self):
         assert apc.kwargs
         pp(apc.kwargs)
-        return '%s.json' % apc.kwargs.get('ui_layout','default')
+        return '%s.json' % apc.kwargs.get('ui_layout1','default')
         
-    def getNode_LayoutRoot(self, nref, ntype):
+    def getNode_LayoutRoot1(self, nref, ntype):
         api = getattr(sbc, 'get%sRoot' % ntype)
         return os.path.join(api(nref),self.LAYOUT_DIR)
         

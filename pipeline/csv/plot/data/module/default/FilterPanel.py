@@ -33,7 +33,7 @@ DEFAULT_PERSPECTIVE = "Default Perspective"
 #---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
 
-list_cache=join('ui_cache','NF1', 'list_movies', 'List_Movies_Center_1.json')
+list_cache=join('ui_cache','NF', 'list_movies', 'List_Movies_Center_1.json')
 
 
     

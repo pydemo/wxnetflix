@@ -11,19 +11,15 @@ from ui_layer.utils import exception
 from pathlib import Path
 
 from ui_layer.common import open_editor
-#from ui_layer.module.controller.Searcheable_ListCtrl_Controller import Controller
-from ui_layer.utils import exception, load_pipeline_module
-import ui_layer.config.ui_config as ui_config
-uic = ui_config.uic
-Controller        = load_pipeline_module(uic, 'Controller/FilterPanel_Controller')
+from ui_layer.module.controller.Searcheable_ListCtrl_Controller import Controller
+from ui_layer.module.Searcheable_ListCtrl import Searcheable_ListCtrl
 
 import cli_layer.aws_pipeline_utils  as APU
 import cli_layer.s3_utils  as S3U
 import ui_layer.config.ui_config as ui_config
 uic = ui_config.uic
 
-import cli_layer.config.app_config as app_config
-apc = app_config.apc
+
 
 USE_CUSTOMTREECTRL = False
 DEFAULT_PERSPECTIVE = "Default Perspective"
@@ -33,9 +29,19 @@ DEFAULT_PERSPECTIVE = "Default Perspective"
 #---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
 
-list_cache=join('ui_cache','NF1', 'list_movies', 'List_Movies_Center_1.json')
+list_cache=join('ui_cache','GH', 'list_objects', 'List_Objects_Center_1.json')
 
-
+def get_S3_File_List():
+    bucket_name= 'gh-package-pdf'
+    pd = S3U.list_s3_files(bucket_name)
+    #header
+    #print('source,pipeline_name')
+    rows=[]
+    for ppl in sorted(pd):
+        pp(pd[ppl])
+        rows.append([bucket_name,pd[ppl]['Key'], pd[ppl]['ETag']])
+    header = ['Bucket','Key', 'ETag']
+    return header, rows
     
     
 class MyLog(wx.Log):
@@ -70,19 +76,15 @@ def DoesModifiedExist(name):
     else:
         return False
 #---------------------------------------------------------------------------
-class FilterPanel(wx.Panel, Controller):
+class Search_Panel(wx.Panel, Controller):
     def __init__(self,  **kwargs):
         def EmptyHandler(evt): pass
         wx.Panel.__init__(self, kwargs['parent'])
         self.ReadConfigurationFile()
         self.rows=[]
         self.header=[]
-        #self.slist = slist = Searcheable_ListCtrl(self)
-        if 0:
-            self.slist = slist = wx.ListCtrl(self, size=(-1,100), style=wx.LC_REPORT )
-        else:
-            self.slist = slist= kwargs['slist']
-        self.header=slist.header
+        self.slist = slist = Searcheable_ListCtrl(self)
+        self.slist = slist = wx.ListCtrl(self, size=(-1,100), style=wx.LC_REPORT )
         if 1:
             listfont = slist.GetFont()
             headfont = listfont.MakeBold()
@@ -101,15 +103,11 @@ class FilterPanel(wx.Panel, Controller):
         self.filter.Bind(wx.EVT_TEXT, self.OnSearch) #EVT_TEXT_ENTER
         if 1:
             searchMenu = wx.Menu()
-            item = searchMenu.AppendRadioItem(-1, "Current Page")
+            item = searchMenu.AppendRadioItem(-1, "Sample Name")
             self.Bind(wx.EVT_MENU, self.OnSearchMenu, item)
-            item = searchMenu.AppendRadioItem(-1, "All Pages")
+            item = searchMenu.AppendRadioItem(-1, "Sample Content")
             self.Bind(wx.EVT_MENU, self.OnSearchMenu, item)
             self.filter.SetMenu(searchMenu)
-            if 1:
-                searchMenu = self.filter.GetMenu().GetMenuItems()
-                self.fullSearch = searchMenu[1].IsChecked()
-                print('FULL SEARCH:', self.fullSearch)
         self.treeMap = {}
         self.searchItems = []
         uic._itemList=[]
@@ -122,18 +120,35 @@ class FilterPanel(wx.Panel, Controller):
         self.slist.Bind(wx.EVT_LEFT_DOWN, self.OnTreeLeftDown)
         # add the windows to the splitter and split it.
         leftBox = wx.BoxSizer(wx.VERTICAL)
-        #leftBox.Add(self.slist, 1, wx.EXPAND|wx.ALL)
+        leftBox.Add(self.slist, 1, wx.EXPAND|wx.ALL)
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        h_sizer.Add(wx.StaticText(self, label = "Table filter:"), 0, wx.ALIGN_CENTER|wx.LEFT, 5)
+        h_sizer.Add(wx.StaticText(self, label = "Filter list:"), 0, wx.TOP|wx.LEFT, 5)
         h_sizer.Add(self.filter, 1, wx.EXPAND|wx.ALL, 5)
-        h_sizer.Add((5,10), 0)
+        h_sizer.Add((10,10), 0)
+        if 1:
+            
+            self.refresh=refresh = wx.Button(self, -1, f'Refresh AWS pipeline list', size=(-1,30))
+            refresh.Bind(wx.EVT_BUTTON, self.refresh_list) 
+            #h_sizer.Add(new, 0, wx.ALIGN_TOP)
+            
+            
 
+            #new.Bind(wx.EVT_BUTTON, self.onNew)
+            self.refresh.Show(True)
+            h_sizer.Add(refresh, 0, wx.LEFT)
         leftBox.Add(h_sizer, 0, wx.EXPAND|wx.ALL)
         if 'wxMac' in wx.PlatformInfo:
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
         #parent.SetSizer(leftBox)
-
+        if 1:
+            #print(list_cache)
+            if isfile(list_cache):
+                self.header, self.rows= json.loads(open(list_cache).read())
+                #self.show_data()
+        #pp(self.header)
+        #self.RecreateList()
+        self.show_data()
         self.SetSizerAndFit(leftBox)
         leftBox.Layout()
         if 1:
@@ -159,30 +174,79 @@ class FilterPanel(wx.Panel, Controller):
         with open(list_cache,'w') as fh:
             fh.write(dump)
 
-
-        
-    def RecreateList(self, evt=None):
-        self.flog('RecreateList: "%s"' % self.filter.GetValue())
-        print('FULL SEARCH 3:', self.fullSearch)
-        if self.fullSearch:
-            _itemList =self.slist.data
-        else:
-            _itemList =self.slist.itemDataMap
-        
-        ppl=uic.ppl
+    def load_data(self):
+        self.header, self.rows=get_S3_File_List()
+        self.cacheData(self.header, self.rows)
+    def refresh_list(self, event):
+        self.load_data()
+        self.show_data()
+        event.Skip()
+    def _show_data(self):
         with wx.WindowDisabler():
-
-            ret= apc.cfg[apc.env]['retrieving']
             info = wx.BusyInfo(
                  wx.BusyInfoFlags()
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title(f"<b>{ret} from {apc.env}</b>")
+                     .Title("<b>Retrieving pipeline list from AWS</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)
-                     .Transparency(int(4 * wx.ALPHA_OPAQUE / 7))
+                     .Transparency(4 * wx.ALPHA_OPAQUE / 7)
+             )
+            data=self.slist
+            #pp(dir(data))
+            data.DeleteAllItems()
+            data.DeleteAllColumns()
+            if 1: #set header
+                for cid, k in enumerate(self.header):
+
+                    data.InsertColumn(cid, k)
+                    #data.SetColumnWidth(k,150)
+            #data.SetToolTip('test')
+            for row in self.rows:
+                data.Append(row)
+            data.Freeze()
+            try: #set header
+                for cid,k in enumerate(self.header):
+                    data.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER) #wx.LIST_AUTOSIZE)
+                #data.AutoSizeColumns()
+            finally:
+                data.Thaw()
+            #pp(data[0])
+            #print(data)
+            wx.GetApp().Yield()
+            #self.updateList({'Line count':cnt})
+            
+    def show_data(self):
+ 
+        itemList=[]
+        
+        for row in self.rows:
+            itemList.append(row)
+        uic._itemList=itemList
+        self.RecreateList()
+        
+    def RecreateList(self, evt=None):
+        #global _treeList
+        
+        #for x in treeList:
+        #    _treeList.append(x)
+        _itemList =uic._itemList
+        ppl=uic.ppl
+        with wx.WindowDisabler():
+
+
+            info = wx.BusyInfo(
+                 wx.BusyInfoFlags()
+                     .Parent(self)
+                     .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
+                                                  wx.ART_OTHER, wx.Size(128, 128)))
+                     .Title("<b>Retrieving pipeline details from AWS 456</b>")
+                     .Text("Please wait...")
+                     .Foreground(wx.WHITE)
+                     .Background(wx.BLACK)
+                     .Transparency(4 * wx.ALPHA_OPAQUE / 7)
              )
             #time.sleep(0.33)
             slist=self.slist
@@ -194,22 +258,21 @@ class FilterPanel(wx.Panel, Controller):
 
                     slist.InsertColumn(cid, k)
                     #slist.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER)
-            #print(len(self.rows))
+            print(len(self.rows))
             for row in self.rows:
                 slist.Append(row)
-
-            #for cid, k in enumerate(self.header):
-            #    slist.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER)
+            for cid, k in enumerate(self.header):
+                slist.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER)
             try:
                 # Catch the search type (name or content)
                 searchMenu = self.filter.GetMenu().GetMenuItems()
-                self.fullSearch = searchMenu[1].IsChecked()
-                if 0:
-                    if evt:
-                        if self.fullSearch:
-                            # Do not`scan all the demo files for every char
-                            # the user input, use wx.EVT_TEXT_ENTER instead
-                            return
+                fullSearch = searchMenu[1].IsChecked()
+
+                if evt:
+                    if fullSearch:
+                        # Do not`scan all the demo files for every char
+                        # the user input, use wx.EVT_TEXT_ENTER instead
+                        return
 
                 #expansionState = self.tree.GetExpansionState()
 
@@ -225,22 +288,15 @@ class FilterPanel(wx.Panel, Controller):
                 count = 0
                 #print(123,len(self.searchItems))
                 #pp(self.searchItems)
-                items=_itemList.values()
-                if 0:
-                    for item in items:
-                        pp(item)
-                        break
-                    e()
+                items=_itemList
+                    
                 #count += 1
                 
                 if filter:
-                    items = [item for item in items if filter in ','.join([str(i) for i in item])]
-                    self.flog('Filtered count: %s' % len(items))
-                    if 0:
-                        if self.fullSearch:
-                            items = self.searchItems
-                        else:
-                            items = [item for item in items if filter in ','.join([str(i) for i in item])]
+                    if fullSearch:
+                        items = self.searchItems
+                    else:
+                        items = [item for item in items if filter in ','.join(item)]
                 #print(111, fullSearch, len(_treeList), len(items), len(self.searchItems.get('category', [])), category)
                 #slist.Append(row)
                 #pp(items)
@@ -275,10 +331,7 @@ class FilterPanel(wx.Panel, Controller):
             finally:
                 slist.Thaw()
             wx.GetApp().Yield() 
-            self.searchItems=[]
-            for c in range(len(self.header)):
-                self.slist.SetColumnWidth(c, wx.LIST_AUTOSIZE)
-            self.slist.SetColumnWidth(2, 130)
+            self.searchItems={}
     def ReadConfigurationFile(self):
 
         self.auiConfigurations = {}

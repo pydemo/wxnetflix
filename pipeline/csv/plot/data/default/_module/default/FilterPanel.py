@@ -21,9 +21,9 @@ import cli_layer.aws_pipeline_utils  as APU
 import cli_layer.s3_utils  as S3U
 import ui_layer.config.ui_config as ui_config
 uic = ui_config.uic
-
 import cli_layer.config.app_config as app_config
 apc = app_config.apc
+
 
 USE_CUSTOMTREECTRL = False
 DEFAULT_PERSPECTIVE = "Default Perspective"
@@ -33,9 +33,19 @@ DEFAULT_PERSPECTIVE = "Default Perspective"
 #---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
 
-list_cache=join('ui_cache','NF1', 'list_movies', 'List_Movies_Center_1.json')
+list_cache=join('ui_cache','GH', 'list_objects', 'List_Objects_Center_1.json')
 
-
+def get_S3_File_List():
+    bucket_name= 'gh-package-pdf'
+    pd = S3U.list_s3_files(bucket_name)
+    #header
+    #print('source,pipeline_name')
+    rows=[]
+    for ppl in sorted(pd):
+        pp(pd[ppl])
+        rows.append([bucket_name,pd[ppl]['Key'], pd[ppl]['ETag']])
+    header = ['Bucket','Key', 'ETag']
+    return header, rows
     
     
 class MyLog(wx.Log):
@@ -125,7 +135,7 @@ class FilterPanel(wx.Panel, Controller):
         #leftBox.Add(self.slist, 1, wx.EXPAND|wx.ALL)
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        h_sizer.Add(wx.StaticText(self, label = "Table filter:"), 0, wx.ALIGN_CENTER|wx.LEFT, 5)
+        h_sizer.Add(wx.StaticText(self, label = "Filter:"), 0, wx.TOP|wx.LEFT, 5)
         h_sizer.Add(self.filter, 1, wx.EXPAND|wx.ALL, 5)
         h_sizer.Add((5,10), 0)
 
@@ -133,7 +143,14 @@ class FilterPanel(wx.Panel, Controller):
         if 'wxMac' in wx.PlatformInfo:
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
         #parent.SetSizer(leftBox)
-
+        if 0:
+            #print(list_cache)
+            if isfile(list_cache):
+                self.header, self.rows= json.loads(open(list_cache).read())
+                #self.show_data()
+        #pp(self.header)
+        #self.RecreateList()
+        #self.show_data()
         self.SetSizerAndFit(leftBox)
         leftBox.Layout()
         if 1:
@@ -178,11 +195,11 @@ class FilterPanel(wx.Panel, Controller):
                      .Parent(self)
                      .Icon(wx.ArtProvider.GetIcon(wx.ART_FIND,
                                                   wx.ART_OTHER, wx.Size(128, 128)))
-                     .Title(f"<b>{ret} from {apc.env}</b>")
+                     .Title(f"<b>{ret}</b>")
                      .Text("Please wait...")
                      .Foreground(wx.WHITE)
                      .Background(wx.BLACK)
-                     .Transparency(int(4 * wx.ALPHA_OPAQUE / 7))
+                     .Transparency(4 * wx.ALPHA_OPAQUE / 7)
              )
             #time.sleep(0.33)
             slist=self.slist
@@ -197,9 +214,8 @@ class FilterPanel(wx.Panel, Controller):
             #print(len(self.rows))
             for row in self.rows:
                 slist.Append(row)
-
-            #for cid, k in enumerate(self.header):
-            #    slist.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER)
+            for cid, k in enumerate(self.header):
+                slist.SetColumnWidth(cid, wx.LIST_AUTOSIZE_USEHEADER)
             try:
                 # Catch the search type (name or content)
                 searchMenu = self.filter.GetMenu().GetMenuItems()
@@ -278,7 +294,6 @@ class FilterPanel(wx.Panel, Controller):
             self.searchItems=[]
             for c in range(len(self.header)):
                 self.slist.SetColumnWidth(c, wx.LIST_AUTOSIZE)
-            self.slist.SetColumnWidth(2, 130)
     def ReadConfigurationFile(self):
 
         self.auiConfigurations = {}

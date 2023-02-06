@@ -16,9 +16,9 @@ uilyt = ui_layout.uilyt
 
 e=sys.exit
 
-DEFAULT_IU_FLOC = join('ui_layer', 'config', 'template', 'default_ui.json')
+DEFAULT_IU_FLOC1 = join('ui_layer', 'config', 'template', 'default_ui.json')
 PPL_DEFAULT_UI_DIR = join(uic.root, 'ui_layer', 'pipeline', uic.pipeline)
-PPL_DEFAULT_UI_FN = 'default.json'
+PPL_DEFAULT_UI_FN1 = 'default.json'
 
 
 DEFAULT_PERSPECTIVE = "Default Perspective"

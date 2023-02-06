@@ -1,0 +1,36 @@
+{
+
+"Center":{
+    "1:PipelineList": {
+        "modulePath"	:"{uic.module_root}\\SearcheableObjectFieldsCtrl1.py",
+        "className"		:"SearcheableObjectFieldsCtrl",
+        "objectAPI"		:"runTest",
+        "_apiParams"		:{},
+        "bestSize"		: [200, 150],
+        "closeButton"	: 0,
+        "captionVisible": 0,
+        "childFrame"	: {}
+    },
+    "2:_PipelineDetails": {
+        "modulePath"	:"{uic.module_root}\\SearcheableObjectFieldsCtrl.py",
+        "className"		:"SearcheableObjectFieldsCtrl",
+        "objectAPI"		:"runTest",
+        "_apiParams"		:{},
+        "bestSize"		: [200, 150],
+        "closeButton"	: 0,
+        "captionVisible": 1,
+        "childFrame"	: {}
+    }	
+},
+    
+    
+"Left":{
+
+
+},
+
+
+"Bottom":{
+
+}
+}
