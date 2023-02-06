@@ -17,7 +17,9 @@ Then navigate to "Filter" text input control in upped panel and start typing.
 ### Filtered data
 ![List of all items](https://github.com/pydemo/wxnetflix/blob/main/docs/screenshots/ushow_ukraine.JPG)
 
-$${\color{red}Note: Plotting is always done over full data set. Filtering will not affect plotting!}$$
+$${\color{red}Note: \space Plotting \space is \space always \space done \space over \space full \space data \space set.}$$
+Filtering will not affect plotting!
+
 
 ## ufinal.bat/Plot 1
 Shows data and first plot "Release by type"  for in/netflix_titles_2021.csv items.
