@@ -125,7 +125,7 @@ class FilterPanel(wx.Panel, Controller):
         #leftBox.Add(self.slist, 1, wx.EXPAND|wx.ALL)
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        h_sizer.Add(wx.StaticText(self, label = "Table filter:"), 0, wx.ALIGN_CENTER|wx.LEFT, 5)
+        h_sizer.Add(wx.StaticText(self, label = "Movie/TV filter:"), 0, wx.ALIGN_CENTER|wx.LEFT, 5)
         h_sizer.Add(self.filter, 1, wx.EXPAND|wx.ALL, 5)
         h_sizer.Add((5,10), 0)
 
