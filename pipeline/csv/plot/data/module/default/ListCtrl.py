@@ -61,7 +61,7 @@ PAGE_SIZE = 30
 BUCKET_NAME= 'itx-bhq-program-fire'
 PREFIX='dev/thrombosis/sdl-update'
 
-con = sqlite3.connect(DB_NAME)
+#con = sqlite3.connect(DB_NAME)
 e=sys.exit
 
 AsyncDownload, EVT_ASYNC_DOWNLOAD = wx.lib.newevent.NewEvent()

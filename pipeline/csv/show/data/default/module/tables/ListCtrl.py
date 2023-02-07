@@ -79,7 +79,7 @@ PAGE_SIZE = 30
 BUCKET_NAME= 'k9-filestore'
 PREFIX='k9-feed-doc-lims'
 
-con = sqlite3.connect(DB_NAME)
+
 e=sys.exit
 
 AsyncDownload, EVT_ASYNC_DOWNLOAD = wx.lib.newevent.NewEvent()
