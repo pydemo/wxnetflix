@@ -6,11 +6,11 @@ wxpython netflix demo
 https://www.kaggle.com/datasets/swatikhedekar/exploratory-data-analysis-on-netflix-data/code?resource=download
 
 
-#Installation
+# Installation
 ```
 virtualenv --python=/usr/bin/python3.6 <path/to/new/virtualenv/>
 source <path/to/new/virtualenv>/bin/activate
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 
