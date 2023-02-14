@@ -21,10 +21,12 @@ Shows data and and lets you filter items for in/netflix_titles_2021.csv items.
 C:\Users\alex_\myg\wxnetflix>cat ufinal.bat
 python ui.py  -nop 2 -r DEV -p csv/show/data_plot -pa config.yml netflix_titles_2021.csv  %*
 ```
-Then navigate to "Filter" text input control in upped panel and start typing.
+
 
 ### All data
 ![List of all items](https://github.com/pydemo/wxnetflix/blob/main/docs/screenshots/ushow.JPG)
+
+Then navigate to "Filter" text input control in upper panel and start typing.
 
 ### Filtered data
 ![List of all items](https://github.com/pydemo/wxnetflix/blob/main/docs/screenshots/ushow_ukraine.JPG)
